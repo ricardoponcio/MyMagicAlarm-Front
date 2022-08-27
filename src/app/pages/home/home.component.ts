@@ -26,10 +26,12 @@ export class HomeComponent implements OnInit {
   }
 
   temperatureAndAppearent(day: any) {
-    if (day.values.temperature == day.values.temperatureApparent) {
-      return day.values.temperature + ' ºC';
+    const actualTemp = day.values.temperature.toFixed();
+    const apparentTemp = day.values.temperatureApparent.toFixed();
+    if (actualTemp == apparentTemp) {
+      return actualTemp + ' ºC';
     }
-    return day.values.temperature + ' ºC' + ' / ' + day.values.temperatureApparent + ' ºC';
+    return actualTemp + ' ºC / ' + apparentTemp + ' ºC';
   }
 
 }
