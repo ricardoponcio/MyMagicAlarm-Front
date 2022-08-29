@@ -1,21 +1,27 @@
-<div class="flex w-full h-screen align-items-center text-white surface-800 px-5">
-  <div *ngFor="let day of currentWeather.intervals.slice(0, 5); let i = index"
-      class="flex flex-wrap w-3 text-center" [class]="i == 0 ? 'p-3 text-100' : 'menor text-400'">
-    <div class="w-full border-bottom-1 flex justify-content-center pb-5">
-      <img [src]="'assets/icons/small/' + day.values.weatherCode + codeFromHour(day) + '@2x.png'" />
-    </div>
-    <label class="w-full text-xl py-3 border-bottom-1">{{ day.startTime | date: "HH'h' dd/MM" }}</label>
-    <div class="w-full flex pt-3 px-0 align-items-center text-lg">
-      <img class="w-3 p-2" src="assets/temperature-icon-white.png" />
-      <label class="flex-auto">{{ temperatureAndAppearent(day) }}</label>
-    </div>
-    <div class="w-full flex pt-3 px-3 align-items-center text-lg">
-      <img class="w-3 p-2" src="assets/rain-icon-white.png" />
-      <label class="flex-auto">{{ day.values.precipitationProbability + '%' }}</label>
-    </div>
-    <div class="w-full flex pt-3 px-3 align-items-center text-lg">
-      <img class="w-3 p-2" src="assets/drop-icon-white.png" />
-      <label class="flex-auto">{{ day.values.humidity + '%' }}</label>
+<div class="flex flex-wrap py-3 h-3 w-full h-screen align-content-evenly text-white surface-800">
+  <div class="flex flex-column w-full gap-2 text-center justify-content-center">
+    <label class="text-100 text-6xl">{{ now() | date: "EEEE" | titlecase }}</label>
+    <label class="text-200 text-5xl">{{ now() | date: "HH:mm:ss '-' dd/MM/yyyy" }}</label>
+  </div>
+  <div class="flex align-items-center w-full px-5">
+    <div *ngFor="let day of currentWeather.intervals.slice(0, 5); let i = index" class="flex flex-wrap w-3 text-center"
+      [class]="i == 0 ? 'p-3 text-100' : 'menor text-400'">
+      <div class="w-full border-bottom-1 flex justify-content-center pb-5">
+        <img [src]="'assets/icons/small/' + day.values.weatherCode + codeFromHour(day) + '@2x.png'" />
+      </div>
+      <label class="w-full text-xl py-3 border-bottom-1">{{ day.startTime | date: "HH'h' dd/MM" }}</label>
+      <div class="w-full flex pt-3 px-0 align-items-center text-lg">
+        <img class="w-3 p-2" src="assets/temperature-icon-white.png" />
+        <label class="flex-auto">{{ temperatureAndAppearent(day) }}</label>
+      </div>
+      <div class="w-full flex pt-3 px-3 align-items-center text-lg">
+        <img class="w-3 p-2" src="assets/rain-icon-white.png" />
+        <label class="flex-auto">{{ day.values.precipitationProbability + '%' }}</label>
+      </div>
+      <div class="w-full flex pt-3 px-3 align-items-center text-lg">
+        <img class="w-3 p-2" src="assets/drop-icon-white.png" />
+        <label class="flex-auto">{{ day.values.humidity + '%' }}</label>
+      </div>
     </div>
   </div>
 </div>

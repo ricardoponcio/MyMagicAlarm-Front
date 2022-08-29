@@ -1,27 +1,64 @@
-import { HttpService } from './http.service';
-import { Injectable } from '@angular/core';
-import { environment } from 'src/environments/environment';
+import { HttpService } from "./http.service";
+import { Injectable } from "@angular/core";
+import { environment } from "src/environments/environment";
+import { last } from "rxjs";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class WeatherService {
   constructor(private httpService: HttpService) {}
 
+  readWeatherFromLocal = () => {
+    return new Promise((resolve, reject) => {
+      const weatherJson = localStorage.getItem("weather");
+      const lastUpdate = localStorage.getItem("last-update");
+      if (
+        !weatherJson ||
+        weatherJson === "undefined" ||
+        !lastUpdate ||
+        this.getMinDiff(new Date(), new Date(lastUpdate)) > 10
+      ) {
+        this.readCurrentWeather(environment.location)
+          .then((data) => {
+            localStorage.setItem("weather", JSON.stringify(data));
+            localStorage.setItem(
+              "last-update",
+              new Date().getTime().toString()
+            );
+            resolve(data);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      } else {
+        resolve(JSON.parse(weatherJson));
+      }
+    });
+  };
+
+  getMinDiff = (startDate: Date, endDate: Date) => {
+    const msInMinute = 60 * 1000;
+
+    return Math.round(
+      Math.abs(endDate.getTime() - startDate.getTime()) / msInMinute
+    );
+  };
+
   readCurrentWeather = (location: string) => {
-    this.httpService.get('/v4/timelines', {
+    return this.httpService.get("/v4/timelines", {
       location: location,
-      apiKey: environment.apiKey,
-      units: 'metric',
-      startTime: 'now',
-      endTime: 'nowPlus4h',
-      timezone: 'America/Sao_Paulo',
+      apikey: environment.apiKey,
+      units: "metric",
+      startTime: "now",
+      endTime: "nowPlus4h",
+      timezone: "America/Sao_Paulo",
       fields: [
-        'temperature',
-        'precipitationProbability',
-        'humidity',
-        'temperatureApparent',
-        'weatherCode',
+        "temperature",
+        "precipitationProbability",
+        "humidity",
+        "temperatureApparent",
+        "weatherCode",
       ],
     });
   };
@@ -31,12 +68,12 @@ export class WeatherService {
       data: {
         timelines: [
           {
-            timestep: '1h',
-            endTime: '2022-08-28T13:00:00-03:00',
-            startTime: '2022-08-27T13:00:00-03:00',
+            timestep: "1h",
+            endTime: "2022-08-28T13:00:00-03:00",
+            startTime: "2022-08-27T13:00:00-03:00",
             intervals: [
               {
-                startTime: '2022-08-27T13:00:00-03:00',
+                startTime: "2022-08-27T13:00:00-03:00",
                 values: {
                   humidity: 36,
                   precipitationProbability: 0,
@@ -46,7 +83,7 @@ export class WeatherService {
                 },
               },
               {
-                startTime: '2022-08-27T14:00:00-03:00',
+                startTime: "2022-08-27T14:00:00-03:00",
                 values: {
                   humidity: 39,
                   precipitationProbability: 0,
@@ -56,7 +93,7 @@ export class WeatherService {
                 },
               },
               {
-                startTime: '2022-08-27T15:00:00-03:00',
+                startTime: "2022-08-27T15:00:00-03:00",
                 values: {
                   humidity: 35,
                   precipitationProbability: 0,
@@ -66,7 +103,7 @@ export class WeatherService {
                 },
               },
               {
-                startTime: '2022-08-27T16:00:00-03:00',
+                startTime: "2022-08-27T16:00:00-03:00",
                 values: {
                   humidity: 31,
                   precipitationProbability: 0,
@@ -76,7 +113,7 @@ export class WeatherService {
                 },
               },
               {
-                startTime: '2022-08-27T17:00:00-03:00',
+                startTime: "2022-08-27T17:00:00-03:00",
                 values: {
                   humidity: 33,
                   precipitationProbability: 0,
@@ -86,7 +123,7 @@ export class WeatherService {
                 },
               },
               {
-                startTime: '2022-08-27T18:00:00-03:00',
+                startTime: "2022-08-27T18:00:00-03:00",
                 values: {
                   humidity: 38,
                   precipitationProbability: 0,
@@ -96,7 +133,7 @@ export class WeatherService {
                 },
               },
               {
-                startTime: '2022-08-27T19:00:00-03:00',
+                startTime: "2022-08-27T19:00:00-03:00",
                 values: {
                   humidity: 44,
                   precipitationProbability: 0,
@@ -106,7 +143,7 @@ export class WeatherService {
                 },
               },
               {
-                startTime: '2022-08-27T20:00:00-03:00',
+                startTime: "2022-08-27T20:00:00-03:00",
                 values: {
                   humidity: 50,
                   precipitationProbability: 0,
@@ -116,7 +153,7 @@ export class WeatherService {
                 },
               },
               {
-                startTime: '2022-08-27T21:00:00-03:00',
+                startTime: "2022-08-27T21:00:00-03:00",
                 values: {
                   humidity: 54,
                   precipitationProbability: 0,
@@ -126,7 +163,7 @@ export class WeatherService {
                 },
               },
               {
-                startTime: '2022-08-27T22:00:00-03:00',
+                startTime: "2022-08-27T22:00:00-03:00",
                 values: {
                   humidity: 58,
                   precipitationProbability: 0,
@@ -136,7 +173,7 @@ export class WeatherService {
                 },
               },
               {
-                startTime: '2022-08-27T23:00:00-03:00',
+                startTime: "2022-08-27T23:00:00-03:00",
                 values: {
                   humidity: 60,
                   precipitationProbability: 0,
@@ -146,7 +183,7 @@ export class WeatherService {
                 },
               },
               {
-                startTime: '2022-08-28T00:00:00-03:00',
+                startTime: "2022-08-28T00:00:00-03:00",
                 values: {
                   humidity: 62,
                   precipitationProbability: 0,
@@ -156,7 +193,7 @@ export class WeatherService {
                 },
               },
               {
-                startTime: '2022-08-28T01:00:00-03:00',
+                startTime: "2022-08-28T01:00:00-03:00",
                 values: {
                   humidity: 60,
                   precipitationProbability: 0,
@@ -166,7 +203,7 @@ export class WeatherService {
                 },
               },
               {
-                startTime: '2022-08-28T02:00:00-03:00',
+                startTime: "2022-08-28T02:00:00-03:00",
                 values: {
                   humidity: 60,
                   precipitationProbability: 0,
@@ -176,7 +213,7 @@ export class WeatherService {
                 },
               },
               {
-                startTime: '2022-08-28T03:00:00-03:00',
+                startTime: "2022-08-28T03:00:00-03:00",
                 values: {
                   humidity: 60,
                   precipitationProbability: 0,
@@ -186,7 +223,7 @@ export class WeatherService {
                 },
               },
               {
-                startTime: '2022-08-28T04:00:00-03:00',
+                startTime: "2022-08-28T04:00:00-03:00",
                 values: {
                   humidity: 62,
                   precipitationProbability: 0,
@@ -196,7 +233,7 @@ export class WeatherService {
                 },
               },
               {
-                startTime: '2022-08-28T05:00:00-03:00',
+                startTime: "2022-08-28T05:00:00-03:00",
                 values: {
                   humidity: 62,
                   precipitationProbability: 0,
@@ -206,7 +243,7 @@ export class WeatherService {
                 },
               },
               {
-                startTime: '2022-08-28T06:00:00-03:00',
+                startTime: "2022-08-28T06:00:00-03:00",
                 values: {
                   humidity: 61,
                   precipitationProbability: 0,
@@ -216,7 +253,7 @@ export class WeatherService {
                 },
               },
               {
-                startTime: '2022-08-28T07:00:00-03:00',
+                startTime: "2022-08-28T07:00:00-03:00",
                 values: {
                   humidity: 56,
                   precipitationProbability: 0,
@@ -226,7 +263,7 @@ export class WeatherService {
                 },
               },
               {
-                startTime: '2022-08-28T08:00:00-03:00',
+                startTime: "2022-08-28T08:00:00-03:00",
                 values: {
                   humidity: 63,
                   precipitationProbability: 0,
@@ -236,7 +273,7 @@ export class WeatherService {
                 },
               },
               {
-                startTime: '2022-08-28T09:00:00-03:00',
+                startTime: "2022-08-28T09:00:00-03:00",
                 values: {
                   humidity: 66,
                   precipitationProbability: 0,
@@ -246,7 +283,7 @@ export class WeatherService {
                 },
               },
               {
-                startTime: '2022-08-28T10:00:00-03:00',
+                startTime: "2022-08-28T10:00:00-03:00",
                 values: {
                   humidity: 64,
                   precipitationProbability: 0,
@@ -256,7 +293,7 @@ export class WeatherService {
                 },
               },
               {
-                startTime: '2022-08-28T11:00:00-03:00',
+                startTime: "2022-08-28T11:00:00-03:00",
                 values: {
                   humidity: 61,
                   precipitationProbability: 0,
@@ -266,7 +303,7 @@ export class WeatherService {
                 },
               },
               {
-                startTime: '2022-08-28T12:00:00-03:00',
+                startTime: "2022-08-28T12:00:00-03:00",
                 values: {
                   humidity: 66,
                   precipitationProbability: 0,
@@ -276,7 +313,7 @@ export class WeatherService {
                 },
               },
               {
-                startTime: '2022-08-28T13:00:00-03:00',
+                startTime: "2022-08-28T13:00:00-03:00",
                 values: {
                   humidity: 65,
                   precipitationProbability: 0,
